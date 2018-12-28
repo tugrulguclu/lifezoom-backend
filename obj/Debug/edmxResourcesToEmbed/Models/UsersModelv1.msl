@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="testdbModelStoreContainer" CdmEntityContainer="testdbEntities4">
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="testdbModel.Users">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="username" ColumnName="username" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="dob" ColumnName="dob" />
+          <ScalarProperty Name="pinCode" ColumnName="pinCode" />
+          <ScalarProperty Name="credit" ColumnName="credit" />
+          <ScalarProperty Name="realName" ColumnName="realName" />
+          <ScalarProperty Name="realSurName" ColumnName="realSurName" />
+          <ScalarProperty Name="gender" ColumnName="gender" />
+          <ScalarProperty Name="regDate" ColumnName="regDate" />
+          <ScalarProperty Name="LastSignedIn" ColumnName="LastSignedIn" />
+          <ScalarProperty Name="LastSignInLocation" ColumnName="LastSignInLocation" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

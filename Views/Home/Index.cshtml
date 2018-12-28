@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<body>
+    <header>
+        <script type="text/javascript" src="../../Scripts/jquery-1.8.2.js"></script>
+    </header>
+    <div id="body">
+        <section class="featured">
+            <div class="content-wrapper">
+                <hgroup class="title">
+                    <h1>Welcome to ASP.NET Web API | Demo by <a href="http://dipendrashekhawat.com" target="_blank">Dipendra Shekhawat</a></h1>
+                </hgroup>
+            </div>
+        </section>
+        <section class="content-wrapper main-content clear-fix">
+            <div>
+                <h4>User Login</h4>
+                <input type="button" value="Login" onclick="Login();" />
+                <ul id="Login" />
+            </div>
+            <div>
+                <h4>Product List</h4>
+                <input type="button" value="View All Products" onclick="GetAllProducts();" />
+                <ul id="ProductList" />
+            </div>
+            <div>
+                <h4>Search by ID</h4>
+                <input type="text" id="searchProductID" size="5" />
+                <input type="button" value="Search" onclick="FindProduct();" />
+                <p id="prod" />
+            </div>
+            <div>
+                <h4>Delete Product by ID</h4>
+                <input type="text" id="delProductID" size="5" />
+                <input type="button" value="Delete" onclick="DeleteProduct();" />
+            </div>
+            <div>
+                <h4>Add Product </h4>
+                <table>
+                    <tr>
+                        <td>Name</td>
+                        <td><input type="text" id="Name" /></td>
+                    </tr>
+                    <tr>
+                        <td>Type</td>
+                        <td><input type="text" id="Type" /></td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td><input type="text" id="Description" /></td>
+                    </tr>
+                    <tr>
+                        <td>Price</td>
+                        <td><input type="text" id="Price" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" align="center">
+                            <input type="button" value="Add" onclick="AddProduct();" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+
+
+<script type="text/javascript">
+
+    var hostUrl = "http://" + document.location.hostname + ":" + window.location.port;
+    var apiUrl = '/api/Product';
+    var apiLoginUrl = '/api/Login';
+
+    $(document).ready(function () { });
+
+    function Login() {
+        $.ajax({
+            url: hostUrl + apiLoginUrl,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                DisplayProductList(data);
+            },
+            error: function () {
+                alert('Some error occured');
+            }
+        });
+    }
+
+    function GetAllProducts() {
+        $.ajax({
+            url: hostUrl + apiUrl,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                DisplayProductList(data);
+            },
+            error: function () {
+                alert('Some error occured');
+            }
+        });
+    }
+
+
+    function FindProduct() {
+        var id = $('#searchProductID').val();
+        $.getJSON(apiUrl + '/' + id)
+            .done(function (data) {
+                DisplayProductForEdit(data);
+            })
+            .fail(function (jqXHR, textStatus, err) {
+                $('#prod').text('Error: ' + err);
+            });
+    }
+
+    function DeleteProduct() {
+        var id = $('#delProductID').val();
+        $.ajax({
+            url: hostUrl + apiUrl + '/' + id,
+            type: 'DELETE',
+            dataType: 'json',
+            success: function (data) {
+                alert('Product deleted');
+                GetAllProducts();
+            },
+            error: function () {
+                alert('Product not found');
+            }
+        });
+    }
+
+    function UpdateProduct() {
+        var product = {
+            Id: $('#searchProductID').val(),
+            Name: $('#EditName').val(),
+            Type: $('#EditType').val(),
+            Description: $('#EditDescription').val(),
+            Price: $('#EditPrice').val()
+        };
+
+        $.ajax({
+            url: hostUrl + apiUrl,
+            type: 'PUT',
+            data: JSON.stringify(product),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                alert('Employee updated');
+                GetAllEmployee();
+            },
+            error: function () {
+                alert('Some error occured');
+            }
+        });
+    }
+
+    function AddProduct() {
+        var product = {
+            Name: $('#Name').val(),
+            Type: $('#Type').val(),
+            Description: $('#Description').val(),
+            Price: $('#Price').val()
+        };
+
+        $.ajax({
+            url: hostUrl + apiUrl,
+            type: 'POST',
+            data: JSON.stringify(product),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                alert('Product added');
+                GetAllProducts();
+            },
+            error: function () {
+                alert('Some error occured');
+            }
+        });
+    }
+
+    function DisplayProductList(products) {
+        $("#ProductList").empty();
+        var result = "<table><th>ID</th><th>Name</th><th>Type</th><th>Description</th><th>Price</th>";
+        $.each(products, function (index, product) {
+            result += "<tr><td>" + product.Id + "</td><td> " + product.Name + "</td><td>"
+                + product.Type + "</td><td>" + product.Description + "</td><td>"
+                + '₹ ' + product.Price + "</td></tr>";
+        });
+        result += "</table>";
+        $("#ProductList").html(result);
+    }
+
+    function DisplayProductForEdit(product) {
+        $("#prod").empty();
+        if (product == null) {
+            alert('Product Not Found')
+            return;
+        }
+
+        $("#prod").empty();
+        var result = "<table>" +
+            "<tr><td>Name</td><td><input type='text' id='EditName' value='" + product.Name + "'</td></tr>" +
+            "<tr><td>Type</td><td><input type='text' id='EditType' value='" + product.Type + "'</td></tr>" +
+            "<tr><td>Description</td><td><input type='text' id='EditDescription' value='" + product.Description + "'</td></tr>" +
+            "<tr><td>Price</td><td><input type='text' id='EditPrice' value='" + product.Price + "'</td></tr>" +
+            "<tr><td colspan='3'align='center'><input type='button' value='Update' onclick='UpdateProduct();' </td></tr>" +
+            "</table>";
+        $("#prod").html(result);
+    }
+
+</script>
